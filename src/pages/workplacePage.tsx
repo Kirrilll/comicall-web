@@ -7,6 +7,7 @@ import { Background } from "../shared/background";
 import { Center } from "../shared/center";
 import { Title } from "../shared/title";
 import ComicsStepper from "../components/stepper/comicsStepper";
+import CreateComics from "../components/createComicsTab";
 
 const WorkplacePage: React.FC = () => {
     return (
@@ -32,7 +33,7 @@ const WorkplacePage: React.FC = () => {
                             <AuthorComics></AuthorComics>
                         </Tab.Pane>
                         <Tab.Pane eventKey="second" className = 'p-2'>
-                            <ComicsStepper></ComicsStepper>
+                            <CreateComics></CreateComics>
                         </Tab.Pane>
                     </Tab.Content>
                 </Col>

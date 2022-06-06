@@ -8,7 +8,7 @@ import { Center } from "../shared/center"
 import { SubmitButton } from "../shared/submit"
 import TextField from "../shared/textfield"
 import { Title } from "../shared/title"
-import {routingSlice} from "../store/routing/routingSlice"
+import { routingSlice } from "../store/routing/routingSlice"
 import { signIn } from "../store/user/signInThunk"
 import { IAuthForm } from "./signUpForm"
 
@@ -30,7 +30,7 @@ const SignInForm: React.FC<IAuthForm> = (props) => {
     }
 
     useEffect(() => {
-        if(signInState == FetchingState.SUCCESSFUL){
+        if (signInState == FetchingState.SUCCESSFUL) {
             dispatch(routingSlice.actions.navTo('/workplace'))
         }
     }, [signInState])
@@ -43,8 +43,21 @@ const SignInForm: React.FC<IAuthForm> = (props) => {
                 : null
             }
             <Form className="mb-5" onSubmit={submit}>
-                <TextField value= {formData.username} changeHandler={handleLogin()} label={'Логин: '} mb={10} />
-                <TextField value = {formData.password} changeHandler={handlePassword()} label={'Пароль: '} mb={32} />
+                <TextField
+                    isTextarea={false}
+                    type={'text'}
+                    value={formData.username}
+                    changeHandler={handleLogin()}
+                    label={'Логин: '}
+                    mb={10} />
+                <TextField
+                    isTextarea = {false}
+                    type={'password'}
+                    value={formData.password}
+                    changeHandler={handlePassword()}
+                    label={'Пароль: '}
+                    mb={32}
+                />
                 <Center>
                     <SubmitButton type="submit">
                         {signInState == FetchingState.LOADING

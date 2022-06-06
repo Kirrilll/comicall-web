@@ -18,8 +18,6 @@ const initialState: UserState = {
     signUpState: FetchingState.IDLE,
 }
 
-console.log(initialState);
-
 export const userSlice = createSlice({
     name: 'user',
     initialState: initialState,

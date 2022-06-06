@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { Col, Nav, Row, Tab } from "react-bootstrap";
+import { Col, Nav, Row, Spinner, Tab } from "react-bootstrap";
 import styled from "styled-components";
 import { Center } from "../../shared/center";
 import { FormPanel } from "../../shared/formPanel";
@@ -9,31 +9,61 @@ import { SubmitButton } from "../../shared/submit";
 import { SecondaryButton } from '../../shared/secondaryButton';
 import { Text } from "../../shared/text";
 import HeaderStepperItem from "./headerStepperitem";
+import { useCreateComicsStep1Mutation } from "../../services/authorService";
+import { Step, useStepper } from "../../hooks/useStepper";
+import { useContext } from "react";
+import { ComicsCreationContext } from "../createComicsTab";
+import { useAppSelector } from "../../hooks/redux";
+import GenresStep from "../steps/genresStep";
 
 const INFORMATION: string = 'info';
 const GENRES: string = 'genres';
 const PAGES: string = 'pages';
 const PUBLISH: string = 'publish';
 
+interface ComicsStep {
+    step: Step,
+    additionalAction: () => void;
+}
 
 const ComicsStepper: React.FC = () => {
 
-    const [stepIndex, setStepIndex] = useState(0);
-    const steps: Array<{ name: string, label: string }> = [
-        { name: INFORMATION, label: 'Основы' },
-        { name: GENRES, label: 'Жанры' },
-        { name: PAGES, label: 'Страницы' },
-        { name: PUBLISH, label: 'Публикация' }
+    const user = useAppSelector(state => state.userReducer.user);
+    const { information } = useContext(ComicsCreationContext)!;
+    const [createComicsStep1, step1Response] = useCreateComicsStep1Mutation();
+
+
+    const steps: Array<ComicsStep> = [
+        {
+            step: { name: INFORMATION, label: 'Основы' },
+            additionalAction: () => createComicsStep1({ token: user!.token, ...information })
+        },
+        {
+            step: { name: GENRES, label: 'Жанры' },
+            additionalAction: () => console.log('жанры')
+        },
+        {
+            step: { name: PAGES, label: 'Страницы' },
+            additionalAction: () => console.log('страницы')
+        },
+        {
+            step: { name: PUBLISH, label: 'Публикация' },
+            additionalAction: () => console.log('публикация')
+        }
     ];
 
-    const togleNext = () => {
-        if (!isLast()) setStepIndex(stepIndex + 1);
+    const { stepIndex, togleNext, toglePrev, isFirst, isLast } = useStepper(steps.map(step => step.step));
+
+    const handleNext = () => {
+        steps[stepIndex].additionalAction();
     }
-    const toglePrev = () => {
-        if (!isFirst()) setStepIndex(stepIndex - 1);
-    }
-    const isFirst = () => stepIndex == 0;
-    const isLast = () => stepIndex == steps.length - 1;
+    const isLoading = () => step1Response.isLoading;
+
+
+
+    useEffect(() => {
+        if (step1Response.isSuccess) togleNext();
+    }, [step1Response])
 
 
     return (
@@ -41,17 +71,17 @@ const ComicsStepper: React.FC = () => {
             <StepperPanel >
                 <Tab.Container
                     id='stepper'
-                    activeKey={steps[stepIndex].name}>
+                    activeKey={steps[stepIndex].step.name}>
                     <Row style={{ height: '100%' }}>
                         <Col sm={3}>
                             <Nav variant="pills" className="flex-column align-items-start">
                                 {steps.map((step, index) => <HeaderStepperItem
                                     key={index}
-                                    eventKey={step.name}
+                                    eventKey={step.step.name}
                                     currStepIndex={stepIndex}
                                     stepIndex={index}
                                     isLast={index === steps.length - 1}
-                                    label={step.label}
+                                    label={step.step.label}
                                 />)}
 
                             </Nav>
@@ -63,7 +93,7 @@ const ComicsStepper: React.FC = () => {
                                         <InfoStep></InfoStep>
                                     </TabPane>
                                     <TabPane eventKey={GENRES}>
-                                        <div>sfsf</div>
+                                        <GenresStep></GenresStep>
                                     </TabPane>
                                     <TabPane eventKey={PAGES}>
                                         <div>wvw eb</div>
@@ -74,10 +104,14 @@ const ComicsStepper: React.FC = () => {
                                 </TabContent>
                                 <div className='d-flex flex-row gap-2 justify-content-center'>
                                     <PrevButton onClick={toglePrev}>Назад</PrevButton>
-                                    <NextButton onClick={togleNext}>Далее</NextButton>
+                                    <NextButton disabled={step1Response.isLoading} type='submit' onClick={togleNext}>
+                                        {step1Response.isLoading
+                                            ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                                            : 'Далее'
+                                        }
+                                    </NextButton>
                                 </div>
                             </ContentLayout>
-
                         </Col>
                     </Row>
                 </Tab.Container>

@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { IComics } from "../models/comics/comics";
+import { ComicsStepInfoRequest } from "../models/comics/comicsInfornation";
 
-interface DeletePaylod{
+interface DeletePaylod {
     comicsId: number,
     token: string
 }
@@ -14,7 +15,7 @@ export const AuthorService = createApi({
         getComics: builder.query<Array<IComics>, string>({
             query: (token) => ({
                 url: 'comics',
-                headers:{ 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` }
             }),
             providesTags: ['Comics'],
         }),
@@ -22,12 +23,32 @@ export const AuthorService = createApi({
             query: (payload: DeletePaylod) => ({
                 method: 'DELETE',
                 url: 'delete',
-                params: {'comicsId': payload.comicsId},
-                headers:{ 'Authorization': `Bearer ${payload.token}` }
+                params: { 'comicsId': payload.comicsId },
+                headers: { 'Authorization': `Bearer ${payload.token}` }
+            }),
+            invalidatesTags: ['Comics']
+        }),
+
+        //Заменить на обычную санку
+        createComicsStep1: builder.mutation<IComics, ComicsStepInfoRequest>({
+            query: (data) => ({
+                method: 'POST',
+                url: 'create',
+                headers: { 'Authorization': `Bearer ${data.token}` },
+                body: {
+                    name: data.name,
+                    description: data.description,
+                    publishYear: data.description,
+                    logo: data.logo,
+                }
             }),
             invalidatesTags: ['Comics']
         })
     })
 })
 
-export const {useGetComicsQuery, useDeleteComicsMutation} = AuthorService;
+export const {
+    useGetComicsQuery,
+    useDeleteComicsMutation,
+    useCreateComicsStep1Mutation 
+} = AuthorService;

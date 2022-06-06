@@ -64,8 +64,19 @@ const SignUpForm: React.FC<IAuthForm> = (props) => {
                 : null
             }
             <Form className="mb-3" onSubmit={submit}>
-                <TextField value={formData.username} changeHandler={handleLogin()} label={'Логин: '} mb={10} />
-                <TextField value={formData.password} changeHandler={handlePassword()} label={'Пароль: '} mb={32} />
+                <TextField 
+                type ={'text'}
+                 value={formData.username} 
+                 changeHandler={handleLogin()} 
+                 label={'Логин: '} 
+                 mb={10} 
+                 isTextarea = {false}/>
+                <TextField 
+                type = {'password'}
+                 value={formData.password} 
+                 changeHandler={handlePassword()} 
+                 label={'Пароль: '} mb={32}
+                 isTextarea = {false}/>
                 <Center>
                     <SubmitButton type="submit">
                         {isLoading() 
