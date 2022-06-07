@@ -15,6 +15,8 @@ import { useContext } from "react";
 import { ComicsCreationContext } from "../createComicsTab";
 import { useAppSelector } from "../../hooks/redux";
 import GenresStep from "../steps/genresStep";
+import PagesStep from "../steps/pagesStep";
+import PublishStep from "../steps/publisStep";
 
 const INFORMATION: string = 'info';
 const GENRES: string = 'genres';
@@ -54,16 +56,11 @@ const ComicsStepper: React.FC = () => {
 
     const { stepIndex, togleNext, toglePrev, isFirst, isLast } = useStepper(steps.map(step => step.step));
 
-    const handleNext = () => {
-        steps[stepIndex].additionalAction();
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        togleNext();
     }
-    const isLoading = () => step1Response.isLoading;
 
-
-
-    useEffect(() => {
-        if (step1Response.isSuccess) togleNext();
-    }, [step1Response])
 
 
     return (
@@ -86,7 +83,7 @@ const ComicsStepper: React.FC = () => {
 
                             </Nav>
                         </Col>
-                        <Col>
+                        <Col style = {{height: '100%'}}>
                             <ContentLayout>
                                 <TabContent>
                                     <TabPane eventKey={INFORMATION}>
@@ -96,21 +93,21 @@ const ComicsStepper: React.FC = () => {
                                         <GenresStep></GenresStep>
                                     </TabPane>
                                     <TabPane eventKey={PAGES}>
-                                        <div>wvw eb</div>
+                                        <PagesStep></PagesStep>
                                     </TabPane>
                                     <TabPane eventKey={PUBLISH}>
-                                        <div>464646</div>
+                                        <PublishStep></PublishStep>
                                     </TabPane>
                                 </TabContent>
-                                <div className='d-flex flex-row gap-2 justify-content-center'>
-                                    <PrevButton onClick={toglePrev}>Назад</PrevButton>
-                                    <NextButton disabled={step1Response.isLoading} type='submit' onClick={togleNext}>
+                                <ControlPanel className='gap-2'>
+                                    <PrevButton disabled = {isFirst()} onClick={toglePrev}>Назад</PrevButton>
+                                    <NextButton disabled={step1Response.isLoading || isLast()} type='submit' onClick={togleNext}>
                                         {step1Response.isLoading
                                             ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
                                             : 'Далее'
                                         }
                                     </NextButton>
-                                </div>
+                                </ControlPanel>
                             </ContentLayout>
                         </Col>
                     </Row>
@@ -120,19 +117,33 @@ const ComicsStepper: React.FC = () => {
     )
 }
 
+const ControlPanel = styled.div `
+    display: flex;
+    justify-content: center;
+    height: 42px;
+`
+
 const ContentLayout = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
+    gap: 10px;
 `
 
 const NextButton = styled(SubmitButton)`
     min-width: 120px;
+    &:disabled{
+        opacity: 0.5;
+    }
 `
 
 const PrevButton = styled(SecondaryButton)`
     min-width: 120px;
+    &:disabled{
+        opacity: 0.5;
+    }
 `
 
 const TabPane = styled(Tab.Pane)`
@@ -141,12 +152,14 @@ const TabPane = styled(Tab.Pane)`
 
 const TabContent = styled(Tab.Content)`
     height: 100%;
+    max-height: 672px;
 `
 
 const StepperPanel = styled(FormPanel)`
     max-width: 1080px;
     width: 100%;
     height: 780px;
+    overflow: hidden;
 `
 
 export default ComicsStepper;

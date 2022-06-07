@@ -18,7 +18,11 @@ const InfoStep: React.FC = () => {
     const togleTitle = (name: string) => togleInfoForm('name', name);
     const toglePreview = (preview: File | null) => togleInfoForm('logo', preview);
     const togleDescription = (description: string) => togleInfoForm('description', description);
-    const toglePublishYear = (publishedYear: string) => togleInfoForm('publishYear', Number.parseInt(publishedYear));
+    const toglePublishYear = (publishedYear: string) =>{ 
+        const value = Number.parseInt(publishedYear);
+        if(!Number.isNaN(value)) togleInfoForm('publishYear', value);
+        else if(publishedYear == '') togleInfoForm('publishYear', null);
+    };
 
     return (
         <>

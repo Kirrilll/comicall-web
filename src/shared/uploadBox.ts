@@ -33,7 +33,7 @@ export const ImagePreview = styled.div`
     #uploaded-image{
         height: 370px;
         width: 310px;
-        object-fit: cover;
+        object-fit: contain;
         border-radius: 20px;
     }
     .close-icon{

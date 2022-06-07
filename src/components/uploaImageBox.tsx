@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
-import { RiCloseFill, RiFolderDownloadFill } from "react-icons/ri";
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import styled from "styled-components";
 import { usePreview } from "../hooks/usePreview";

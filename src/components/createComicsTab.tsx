@@ -15,8 +15,9 @@ interface IComicsCreation {
     information: IInfo,
     togleInfoForm: (name: string, value: string | File | null| number) => void
     genres: Array<string>,
-    togleGenres: (genres: Array<string>) => void
-    pages: Array<File> | null
+    togleGenres: (genres: Array<string>) => void,
+    pages: FileList | null,
+    toglePages: ( pages: FileList | null ) => void
 }
   
 export const ComicsCreationContext = React.createContext<IComicsCreation | null>(null);
@@ -33,13 +34,15 @@ const CreateComics:React.FC = () => {
 
     const [comicsInfo, setComicsInfo] = useState<IInfo>(initialInfo);
     const [genres, setGenres] = useState<Array<string>>([]);
+    const [pages, setPages] = useState<FileList | null>(null);
 
     const providedData: IComicsCreation = {
         information: comicsInfo,
         togleInfoForm: (name, value) => setComicsInfo({...comicsInfo, [name]: value}),
         genres: genres,
         togleGenres: (updatedGenres) => setGenres(updatedGenres),
-        pages: null
+        pages: pages,
+        toglePages: (pages) => setPages(pages)
     }
 
     return (
