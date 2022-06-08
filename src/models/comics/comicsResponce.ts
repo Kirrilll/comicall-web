@@ -1,6 +1,6 @@
 
 
-export interface IComics{
+export interface IComicsResponse{
     id: number,
     name: string,
     authorName: string,

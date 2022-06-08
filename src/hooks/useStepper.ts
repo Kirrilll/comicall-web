@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { DependencyList, useEffect, useState } from "react";
 
 export interface Step {
     name: string,
     label: string
 }
 
-export const useStepper = (steps: Array<Step>) => {
+export const useStepper = (steps: Array<Step>, resetDependencies: DependencyList) => {
     const [stepIndex, setStepIndex] = useState(0);
+
+    useEffect(() => {
+        setStepIndex(0);
+    }, resetDependencies );
 
     return {
         stepIndex,

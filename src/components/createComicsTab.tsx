@@ -1,10 +1,19 @@
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
-import { setupStore } from "../store/store";
-import ComicsStepper from "./stepper/comicsStepper";
+import { useAppSelector } from "../hooks/redux";
+import ComicsStepper, { IStep } from "./stepper/comicsStepper";
+import GenresStep from "./steps/genresStep";
+import InfoStep from "./steps/infoStep";
+import PagesStep from "./steps/pagesStep";
+import PublishStep from "./steps/publisStep";
 
+const INFORMATION: string = 'info';
+const GENRES: string = 'genres';
+const PAGES: string = 'pages';
+const PUBLISH: string = 'publish';
 
-interface IInfo{
+export interface IComicsInfo {
     name: string,
     description: string,
     logo: File | null,
@@ -12,43 +21,51 @@ interface IInfo{
 }
 
 interface IComicsCreation {
-    information: IInfo,
-    togleInfoForm: (name: string, value: string | File | null| number) => void
+    information: IComicsInfo,
+    togleInfoForm: (name: string, value: string | File | null | number) => void
     genres: Array<string>,
     togleGenres: (genres: Array<string>) => void,
     pages: FileList | null,
-    toglePages: ( pages: FileList | null ) => void
+    toglePages: (pages: FileList | null) => void
 }
-  
+
 export const ComicsCreationContext = React.createContext<IComicsCreation | null>(null);
 
-const initialInfo: IInfo = {
-    name: '',
-    description: '',
-    logo: null,
-    publishYear: null
-}
+const CreateComics: React.FC = () => {
 
+    const updatedComics = useAppSelector(state => state.comicsCreationReducer.updatedComics);
 
-const CreateComics:React.FC = () => {
+    const isInfoFinished = () => updatedComics != null;
+    const isGenresFinished = () => updatedComics != null && updatedComics.genres.length > 0;
 
-    const [comicsInfo, setComicsInfo] = useState<IInfo>(initialInfo);
-    const [genres, setGenres] = useState<Array<string>>([]);
-    const [pages, setPages] = useState<FileList | null>(null);
-
-    const providedData: IComicsCreation = {
-        information: comicsInfo,
-        togleInfoForm: (name, value) => setComicsInfo({...comicsInfo, [name]: value}),
-        genres: genres,
-        togleGenres: (updatedGenres) => setGenres(updatedGenres),
-        pages: pages,
-        toglePages: (pages) => setPages(pages)
-    }
-
+    const steps: IStep[] = [
+        {
+            name: INFORMATION,
+            label: 'Информация',
+            content: <InfoStep></InfoStep>,
+            isFinished: isInfoFinished()
+        },
+        {
+            name: GENRES,
+            label: 'Жанры',
+            content: <GenresStep></GenresStep>,
+            isFinished: isGenresFinished()
+        },
+        {
+            name: PAGES,
+            label: 'Страницы',
+            content: <PagesStep></PagesStep>,
+            isFinished: true
+        },
+        {
+            name: PUBLISH,
+            label: 'Публикация',
+            content: <PublishStep></PublishStep>,
+            isFinished: false
+        },
+    ]
     return (
-        <ComicsCreationContext.Provider value = {providedData}>
-            <ComicsStepper></ComicsStepper>
-        </ComicsCreationContext.Provider>
+        <ComicsStepper steps={steps}></ComicsStepper>
     );
 }
 

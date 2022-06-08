@@ -1,11 +1,11 @@
 import React from "react";
 import { Container, Row } from "react-bootstrap";
-import { IComics } from "../models/comics/comics";
+import { IComicsResponse } from "../models/comics/comicsResponce";
 import { Center } from "../shared/center";
 import Comics from "./comics";
 
 interface IComicsContainerProp {
-    comics: Array<IComics>
+    comics: Array<IComicsResponse>
 }
 
 const ComicsContainer: React.FC<IComicsContainerProp> = (props) => {

@@ -4,18 +4,17 @@ import { UploadBox } from "../../shared/uploadBox";
 import styled from "styled-components";
 import { IoIosAdd } from "react-icons/io";
 import { Container, Spinner } from "react-bootstrap";
-import { ComicsCreationContext } from "../createComicsTab";
 import { Center } from "../../shared/center";
 
 const PagesStep: React.FC = () => {
-    const { toglePages } = useContext(ComicsCreationContext)!;
+    const [pages, setPages] = useState<FileList | null>(null)
     const [previews, setPreviews] = useState<Array<ArrayBuffer | string | null>>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsLoading(true)
         if (e.target.files) {
-            toglePages(e.target.files);
+            setPages(e.target.files);
             const tempPrevies = [...previews];
             for (let i = 0; i < e.target.files.length; i++) {
                 if (e.target.files[i]) {

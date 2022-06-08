@@ -1,12 +1,12 @@
 import axios from "axios"
 import { AppDispatch } from "../../store"
+import {comicsDeleteSlice} from "../slices/comicsDeleteSlice"
 import {comicsSlice} from "../slices/comicsSlice"
-import {deleteComicsSlice} from "../slices/deleteComicsSlice"
 import { IAuthorizedRequst } from "./getAllThunk"
 
 
 export const deleteById = (request: IAuthorizedRequst<number>) => (dispatch: AppDispatch) => {
-    dispatch(deleteComicsSlice.actions.deleting());
+    dispatch(comicsDeleteSlice.actions.deleting());
     axios({
         method: 'DELETE',
         url: 'http://localhost:8080/api/author/delete',
@@ -14,10 +14,10 @@ export const deleteById = (request: IAuthorizedRequst<number>) => (dispatch: App
         headers: {'Authorization': `Bearer ${request.token}`}
     })
     .then((res) => {
-        dispatch(deleteComicsSlice.actions.deletedSuccessfully());
+        dispatch(comicsDeleteSlice.actions.deletedSuccessfully());
         dispatch(comicsSlice.actions.deleteComics(request.content))
     })
     .catch(() => {
-        dispatch(deleteComicsSlice.actions.deleteError());
+        dispatch(comicsDeleteSlice.actions.deleteError());
     })
 }

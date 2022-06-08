@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { ErrorText, SuccessfulText } from "../shared/text";
 import { Text } from "../shared/text";
 import { RiCloseFill, RiEdit2Line } from 'react-icons/ri';
-import { useState } from "react";
-import DeleteModal from "./deleteModel";
+import { useAppDispatch } from "../hooks/redux";
+import {comicsDeleteSlice} from "../store/comics/slices/comicsDeleteSlice";
 
 export interface IComicsProp {
     id: number,
@@ -15,26 +15,18 @@ export interface IComicsProp {
 }
 
 const Comics: React.FC<IComicsProp> = (props) => {
-
-    const [isShown, setIsShown] = useState<boolean>(false);
+    const dispatch = useAppDispatch()
 
     const { posterPath, name, id, isRead } = props;
-
     const clearPath = posterPath
         .split('')
         .map(symbol => symbol === '\\' ? '/' : symbol)
         .join('');
 
-
-    const togleShow = (value: boolean) => () => setIsShown(value);
+    const togleActivate = () => dispatch(comicsDeleteSlice.actions.activate(props));
 
     return (
         <>
-            <DeleteModal
-                comicsId={id}
-                isShown={isShown}
-                handleHide={togleShow(false)}
-                title={name}></DeleteModal>
             <ComicsCard style={{ width: '18rem' }}>
                 <CardHeader className='d-flex justify-content-between'>
                     {isRead
@@ -45,7 +37,7 @@ const Comics: React.FC<IComicsProp> = (props) => {
                         <IconButton className='me-2' >
                             <RiEdit2Line size={'25'}></RiEdit2Line>
                         </IconButton>
-                        <IconButton onClick={togleShow(true)}>
+                        <IconButton onClick={togleActivate}>
                             <RiCloseFill size={'25'}></RiCloseFill>
                         </IconButton>
                     </div>

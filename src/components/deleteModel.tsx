@@ -4,49 +4,42 @@ import { SubmitButton } from "../shared/submit";
 import { Text } from "../shared/text";
 import styled from "styled-components";
 import { SecondaryButton } from "../shared/secondaryButton";
-import { useDeleteComicsMutation } from '../services/authorService';
-import { useAppSelector } from "../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { deleteById } from "../store/comics/thunkes/deleteThunk";
+import {comicsDeleteSlice} from "../store/comics/slices/comicsDeleteSlice";
+import { FetchingState } from "../enums/fetchingState";
 
-interface IDeleteModalProp {
-    handleHide: () => void,
-    comicsId: number,
-    isShown: boolean,
-    title: string
-}
+const DeleteModal: React.FC = () => {
 
-const DeleteModal: React.FC<IDeleteModalProp> = (props) => {
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(state => state.userReducer.user)!;
+    const {isModalOpen, target, status} = useAppSelector(state => state.deleteComicsReducer);
+    const deleteComics = () =>   dispatch(deleteById({token: user.token, content: target!.id}));
+    const hide = () =>  dispatch(comicsDeleteSlice.actions.deactivate());
 
-    const user = useAppSelector(state => state.userReducer.user);
-    const { handleHide, comicsId, isShown, title } = props;
-
-    const [deleteComics, { isLoading, isSuccess, isError }] = useDeleteComicsMutation();
-    const handleComics = () =>{ 
-        deleteComics({ comicsId: comicsId, token: user!.token }) 
-        handleHide();
-    };
 
     return (
         <Modal
             size="sm"
             aria-labelledby="contained-modal-title-vcenter"
             centered
-            show={isShown}
+            show={isModalOpen}
         >
             <Modal.Body>
                 <Text className = 'text-center p-3'>
-                    Вы уверены что хотите удалить <b>{title}</b>?
+                    Вы уверены что хотите удалить <b>{target?.name}</b>?
                 </Text>
             </Modal.Body>
             <Modal.Footer className='d-flex flex-row gap-2' >
-                <ModalSubmitButton className='flex-fill' onClick={handleComics}>
+                <ModalSubmitButton className='flex-fill' onClick={deleteComics}>
                     <Text>
-                        {isLoading
+                        {status == FetchingState.LOADING
                             ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
                             : 'Да'
                         }
                     </Text>
                 </ModalSubmitButton>
-                <ModalSecondaryButton className='flex-fill' onClick={handleHide}>
+                <ModalSecondaryButton className='flex-fill' onClick={hide}>
                     <Text>Нет</Text>
                 </ModalSecondaryButton>
             </Modal.Footer>

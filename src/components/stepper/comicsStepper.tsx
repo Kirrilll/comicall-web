@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
 import { Col, Nav, Row, Spinner, Tab } from "react-bootstrap";
 import styled from "styled-components";
 import { Center } from "../../shared/center";
@@ -7,106 +6,63 @@ import { FormPanel } from "../../shared/formPanel";
 import InfoStep from "../steps/infoStep";
 import { SubmitButton } from "../../shared/submit";
 import { SecondaryButton } from '../../shared/secondaryButton';
-import { Text } from "../../shared/text";
 import HeaderStepperItem from "./headerStepperitem";
-import { useCreateComicsStep1Mutation } from "../../services/authorService";
 import { Step, useStepper } from "../../hooks/useStepper";
 import { useContext } from "react";
 import { ComicsCreationContext } from "../createComicsTab";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import GenresStep from "../steps/genresStep";
 import PagesStep from "../steps/pagesStep";
 import PublishStep from "../steps/publisStep";
+import { FetchingState } from "../../enums/fetchingState";
+import { create } from "../../store/comics/thunkes/createThunk";
 
-const INFORMATION: string = 'info';
-const GENRES: string = 'genres';
-const PAGES: string = 'pages';
-const PUBLISH: string = 'publish';
-
-interface ComicsStep {
-    step: Step,
-    additionalAction: () => void;
+export interface IStep {
+    content: React.ReactElement,
+    name: string,
+    label: string,
+    isFinished: boolean
 }
 
-const ComicsStepper: React.FC = () => {
+const ComicsStepper: React.FC<{ steps: IStep[] }> = (props) => {
 
-    const user = useAppSelector(state => state.userReducer.user);
-    const { information } = useContext(ComicsCreationContext)!;
-    const [createComicsStep1, step1Response] = useCreateComicsStep1Mutation();
+    const { steps } = props;
+    const {isUpdating} = useAppSelector(state => state.comicsCreationReducer)
 
-
-    const steps: Array<ComicsStep> = [
-        {
-            step: { name: INFORMATION, label: 'Основы' },
-            additionalAction: () => createComicsStep1({ token: user!.token, ...information })
-        },
-        {
-            step: { name: GENRES, label: 'Жанры' },
-            additionalAction: () => console.log('жанры')
-        },
-        {
-            step: { name: PAGES, label: 'Страницы' },
-            additionalAction: () => console.log('страницы')
-        },
-        {
-            step: { name: PUBLISH, label: 'Публикация' },
-            additionalAction: () => console.log('публикация')
-        }
-    ];
-
-    const { stepIndex, togleNext, toglePrev, isFirst, isLast } = useStepper(steps.map(step => step.step));
-
-    const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        togleNext();
-    }
-
-
+    const { stepIndex, togleNext, toglePrev, isFirst, isLast } = useStepper(steps.map<Step>(step => ({ name: step.name, label: step.label })), [isUpdating]);
 
     return (
         <Center>
             <StepperPanel >
                 <Tab.Container
                     id='stepper'
-                    activeKey={steps[stepIndex].step.name}>
+                    activeKey={steps[stepIndex].name}>
                     <Row style={{ height: '100%' }}>
                         <Col sm={3}>
                             <Nav variant="pills" className="flex-column align-items-start">
                                 {steps.map((step, index) => <HeaderStepperItem
                                     key={index}
-                                    eventKey={step.step.name}
+                                    eventKey={step.name}
                                     currStepIndex={stepIndex}
                                     stepIndex={index}
                                     isLast={index === steps.length - 1}
-                                    label={step.step.label}
+                                    label={step.label}
                                 />)}
 
                             </Nav>
                         </Col>
-                        <Col style = {{height: '100%'}}>
+                        <Col style={{ height: '100%' }}>
                             <ContentLayout>
                                 <TabContent>
-                                    <TabPane eventKey={INFORMATION}>
-                                        <InfoStep></InfoStep>
-                                    </TabPane>
-                                    <TabPane eventKey={GENRES}>
-                                        <GenresStep></GenresStep>
-                                    </TabPane>
-                                    <TabPane eventKey={PAGES}>
-                                        <PagesStep></PagesStep>
-                                    </TabPane>
-                                    <TabPane eventKey={PUBLISH}>
-                                        <PublishStep></PublishStep>
-                                    </TabPane>
+                                    {steps.map((step, index) => (
+                                        <TabPane key={step.name} eventKey={step.name}>
+                                            {step.content}
+                                        </TabPane>
+                                    ))}
                                 </TabContent>
                                 <ControlPanel className='gap-2'>
-                                    <PrevButton disabled = {isFirst()} onClick={toglePrev}>Назад</PrevButton>
-                                    <NextButton disabled={step1Response.isLoading || isLast()} type='submit' onClick={togleNext}>
-                                        {step1Response.isLoading
-                                            ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                                            : 'Далее'
-                                        }
-                                    </NextButton>
+                                    <PrevButton disabled={isFirst()} onClick={toglePrev}>Назад</PrevButton>
+                                    <NextButton disabled={isLast() || !steps[stepIndex].isFinished} onClick={togleNext}>Далее</NextButton>
                                 </ControlPanel>
                             </ContentLayout>
                         </Col>
@@ -117,7 +73,7 @@ const ComicsStepper: React.FC = () => {
     )
 }
 
-const ControlPanel = styled.div `
+const ControlPanel = styled.div`
     display: flex;
     justify-content: center;
     height: 42px;
@@ -163,3 +119,7 @@ const StepperPanel = styled(FormPanel)`
 `
 
 export default ComicsStepper;
+
+function as(arg0: (step: IStep) => void, as: any, Step: any): Step[] {
+    throw new Error("Function not implemented.");
+}
