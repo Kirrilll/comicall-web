@@ -15,4 +15,5 @@ export const create = (request: IAuthorizedRequst<IComicsInfo>) => (dispatch: Ap
         dispatch(comicsCreationSlice.actions.createdSuccessfully(res.data));
         dispatch(comicsSlice.actions.createComics(res.data));
     })
+    .catch(() =>  dispatch(comicsCreationSlice.actions.createdWithError()))
 }

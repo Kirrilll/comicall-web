@@ -13,6 +13,8 @@ const root = ReactDOM.createRoot(
 
 const store = setupStore();
 
+console.log('sfsf');
+
 root.render(
   <Provider store={store}>
     <BrowserRouter>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Spinner } from "react-bootstrap"
+import { useNavigate } from "react-router-dom";
 import { FetchingState } from "../enums/fetchingState";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { UserRequest } from "../models/user/userRequest";
@@ -8,7 +9,6 @@ import { Center } from "../shared/center"
 import { SubmitButton } from "../shared/submit"
 import TextField from "../shared/textfield"
 import { Title } from "../shared/title"
-import { navTo } from "../store/routing/routingSlice";
 import { signIn } from "../store/user/signInThunk";
 import { signUp } from "../store/user/signUpThunk";
 
@@ -25,6 +25,7 @@ const SignUpForm: React.FC<IAuthForm> = (props) => {
     const handleLogin = () => (value: string) => setFormData({ ...formData, username: value });
     const handlePassword = () => (value: string) => setFormData({ ...formData, password: value });
 
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const {signInState, signUpState} = useAppSelector(state => state.userReducer);
 
@@ -47,7 +48,7 @@ const SignUpForm: React.FC<IAuthForm> = (props) => {
 
     useEffect(() => {
         if(signInState == FetchingState.SUCCESSFUL){
-            dispatch(navTo('/workplace'))
+            navigate('/workplace')
         }
     }, [signInState])
 

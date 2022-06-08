@@ -1,6 +1,5 @@
 
 import { useState, DragEvent } from "react";
-import { ALL } from "../components/steps/genresStep";
 
 interface IDnDProp {
     columns: Map<string, string[]>,

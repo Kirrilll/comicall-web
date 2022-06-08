@@ -4,19 +4,9 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAppSelector } from './hooks/redux';
 import AuthentictionPage from './pages/authencticationPage';
 import WorkplacePage from './pages/workplacePage';
-import { AUTH_PATH, WORKPLACE_PATH } from './paths';
-
-//Обработать момент, когда страница презагружается
+import { AUTH_PATH, WORKPLACE_PATH } from './constants';
 
 function Navigator() {
-
-  const navigate = useNavigate();
-  const path = useAppSelector(state => state.routeReducer.path);
-  
-
-  useEffect(() => {
-    navigate(path)
-  }, [path])
 
   return (
     <Routes>

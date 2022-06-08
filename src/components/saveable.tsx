@@ -3,7 +3,7 @@ import { Spinner } from "react-bootstrap"
 import { RiSave3Line } from "react-icons/ri"
 import styled from "styled-components"
 import { FetchingState } from "../enums/fetchingState"
-import { Text } from '../shared/text'
+import { ErrorText, SuccessfulText, Text } from '../shared/text'
 
 interface ISaveable {
     children: React.ReactElement,
@@ -17,6 +17,8 @@ const Saveable: React.FC<ISaveable> = (props) => {
     return (
         <ColumnLayout>
             <SavePanel>
+                {status == FetchingState.ERROR? <ErrorText>Не удалось сохранить</ErrorText>: null}
+                {status == FetchingState.SUCCESSFUL ? <SuccessfulText>Успешно сохранено</SuccessfulText>: null}
                 <SaveGroup>
                     {status == FetchingState.LOADING
                         ? <Spinner as="span" animation="border" role="status" aria-hidden="true" />
@@ -37,6 +39,8 @@ const SavePanel = styled.div `
     justify-content: flex-end;
     height: 90px;
     padding: 0 10px;
+    align-items: center;
+    gap: 20px;
 
 `
 const ColumnLayout = styled.div`

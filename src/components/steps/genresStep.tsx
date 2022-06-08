@@ -3,6 +3,7 @@ import React, { useState, DragEvent, useRef } from "react";
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
+import { ALL, CHOSEN } from "../../constants";
 import { FetchingState } from "../../enums/fetchingState";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useDragNDrop } from "../../hooks/useDragNDrop";
@@ -10,10 +11,6 @@ import { AuthorService } from "../../services/authorService";
 import { Text } from "../../shared/text";
 import { addGenres } from "../../store/comics/thunkes/addGenresThunk";
 import Saveable from "../saveable";
-
-
-export const CHOSEN = 'chosen';
-export const ALL = 'all'
 
 const GenresStep: React.FC = () => {
 

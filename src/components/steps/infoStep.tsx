@@ -7,7 +7,7 @@ import TextField from "../../shared/textfield";
 import { Center } from "../../shared/center";
 import UploadImageBox from "../uploaImageBox";
 import { useContext } from "react";
-import { ComicsCreationContext, IComicsInfo } from "../createComicsTab";
+import { IComicsInfo } from "../createComicsTab";
 import Saveable from "../saveable";
 import { FetchingState } from "../../enums/fetchingState";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";

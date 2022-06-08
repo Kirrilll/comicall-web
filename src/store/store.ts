@@ -1,12 +1,10 @@
 import { combineReducers, configureStore} from "@reduxjs/toolkit";
 import userReducer from './user/userSlice'
-import routeReducer from './routing/routingSlice'
 import comicsReducer from './comics/slices/comicsSlice'
 import deleteComicsReducer from "./comics/slices/comicsDeleteSlice";
 import comicsCreationReducer from "./comics/slices/comicsCreationSlice";
 
 const rootReducer = combineReducers({
-    routeReducer,
     userReducer,
     comicsReducer,
     deleteComicsReducer,

@@ -30,6 +30,9 @@ export const comicsCreationSlice = createSlice({
         reset(state) {
             state.isUpdating = false;
             state.updatedComics = null;
+            state. updateComicsGenresStatus = FetchingState.IDLE,
+            state.updateComicsPagesStatus = FetchingState.IDLE,
+            state.updateComicsPublishStatus = FetchingState.IDLE
         },
         startUpdate(state, action: PayloadAction<IComicsResponse | null>) {
             state.updatedComics = action.payload;
@@ -41,6 +44,9 @@ export const comicsCreationSlice = createSlice({
         createdSuccessfully(state, action: PayloadAction<IComicsResponse>) {
             state.creatingComicsStatus = FetchingState.SUCCESSFUL;
             state.updatedComics = action.payload;
+        },
+        createdWithError(state){
+            state.creatingComicsStatus = FetchingState.ERROR
         },
         updatingGenres(state) {
             state.updateComicsGenresStatus = FetchingState.LOADING;

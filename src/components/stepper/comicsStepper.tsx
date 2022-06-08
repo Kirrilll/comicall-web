@@ -1,21 +1,13 @@
-import React, { useState } from "react";
-import { Col, Nav, Row, Spinner, Tab } from "react-bootstrap";
+import React from "react";
+import { Col, Nav, Row, Tab } from "react-bootstrap";
 import styled from "styled-components";
 import { Center } from "../../shared/center";
 import { FormPanel } from "../../shared/formPanel";
-import InfoStep from "../steps/infoStep";
 import { SubmitButton } from "../../shared/submit";
 import { SecondaryButton } from '../../shared/secondaryButton';
 import HeaderStepperItem from "./headerStepperitem";
 import { Step, useStepper } from "../../hooks/useStepper";
-import { useContext } from "react";
-import { ComicsCreationContext } from "../createComicsTab";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import GenresStep from "../steps/genresStep";
-import PagesStep from "../steps/pagesStep";
-import PublishStep from "../steps/publisStep";
-import { FetchingState } from "../../enums/fetchingState";
-import { create } from "../../store/comics/thunkes/createThunk";
+import { useAppSelector } from "../../hooks/redux";
 
 export interface IStep {
     content: React.ReactElement,
