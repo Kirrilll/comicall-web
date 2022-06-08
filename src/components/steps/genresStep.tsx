@@ -5,20 +5,15 @@ import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import { FetchingState } from "../../enums/fetchingState";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { useDragNDrop } from "../../hooks/useDragNDrop";
 import { AuthorService } from "../../services/authorService";
 import { Text } from "../../shared/text";
 import { addGenres } from "../../store/comics/thunkes/addGenresThunk";
 import Saveable from "../saveable";
 
-enum ColumnName {
-    CHOSEN,
-    ALL
-}
 
-interface IDragItem {
-    startColumn: ColumnName | null,
-    index: number | null
-}
+export const CHOSEN = 'chosen';
+export const ALL = 'all'
 
 const GenresStep: React.FC = () => {
 
@@ -27,15 +22,10 @@ const GenresStep: React.FC = () => {
     const [allGenres, setAllGenres] = useState<string[]>([]);
     const user = useAppSelector(state => state.userReducer.user);
 
-    const [genres, setGenres] = useState(new Map<ColumnName, string[]>([
-        [ColumnName.CHOSEN, []],
-        [ColumnName.ALL, []]
+    const [genres, setGenres] = useState(new Map<string, string[]>([
+        [CHOSEN, []],
+        [ALL, []]
     ]));
-
-    const [dragItem, setDragItem] = useState<IDragItem>({
-        startColumn: null,
-        index: null
-    });
 
     useEffect(() => {
         AuthorService.getAllGenres(user!.token)
@@ -43,99 +33,62 @@ const GenresStep: React.FC = () => {
                 const tempAllGenres = res.data.map(genre => genre.name);
                 setAllGenres(tempAllGenres);
                 setGenres(new Map()
-                    .set(ColumnName.CHOSEN, [])
-                    .set(ColumnName.ALL, tempAllGenres)
+                    .set(CHOSEN, [])
+                    .set(ALL, tempAllGenres)
                 )
             });
     }, [])
 
     useEffect(() => {
         if (!isUpdating) setGenres(new Map()
-            .set(ColumnName.CHOSEN, [])
-            .set(ColumnName.ALL, allGenres)
+            .set(CHOSEN, [])
+            .set(ALL, allGenres)
         );
-        else if (updatedComics != null) setGenres(new Map()
-            .set(ColumnName.CHOSEN, updatedComics.genres)
-            .set(ColumnName.ALL, allGenres.filter(genre => updatedComics.genres.indexOf(genre) == -1)))
+        // else if (updatedComics != null) setGenres(new Map()
+        //     .set(ColumnName.CHOSEN, updatedComics.genres)
+        //     .set(ColumnName.ALL, allGenres.filter(genre => updatedComics.genres.indexOf(genre) == -1)))
     }, [isUpdating, updatedComics])
 
-    //Вынести часть в хук 
 
-    const dropHandler = (e: DragEvent<HTMLDivElement>, dropColumn: ColumnName) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const { draggable, dropZone, helpers } = useDragNDrop({ columns: genres, handleColums: value => setGenres(value) })
 
-        if (dropColumn == dragItem.startColumn) return;
-
-        const startColumnItems = genres.get(dragItem.startColumn!)!;
-        const endColumnItems = genres.get(dropColumn!)!;
-
-        const itemIndex = dragItem.index!;
-
-        const updatedStartItems = [...startColumnItems.slice(0, itemIndex), ...startColumnItems.slice(itemIndex + 1, startColumnItems.length)];
-        const updatedEndItems = [...endColumnItems, startColumnItems[itemIndex]];
-
-        const updatedGenres = new Map<ColumnName, Array<string>>()
-            .set(dropColumn, updatedEndItems)
-            .set(dragItem.startColumn!, updatedStartItems);
-
-        setGenres(updatedGenres);
-        setDragItem({ startColumn: null, index: null });
-    }
-
-
-    const dragStartHandler = (e: DragEvent<HTMLDivElement>, name: ColumnName, index: number) => {
-        setDragItem({
-            startColumn: name,
-            index: index
-        });
-    }
-
-    const dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-    }
 
     const eventHandler = () => dispatch(addGenres({
         token: user!.token,
         content: {
             comicsId: updatedComics!.id,
-            genres: genres.get(ColumnName.CHOSEN)!
+            genres: genres.get(CHOSEN)!
         }
     }));
 
     return (
         <Saveable eventHandler={eventHandler} status={updateComicsGenresStatus} >
             <ColumnLayout>
-                <SelectedGenresColumn id={'chosen-column'} onDrop={(e) => dropHandler(e, ColumnName.CHOSEN)} onDragOver={dragOverHandler}>
+                <SelectedGenresColumn id={'chosen-column'} onDrop={(e) => helpers.dropHandler(e, CHOSEN)} {...dropZone}>
                     <Text>Жанры комикса</Text>
                     <GenresContainer className='gap-2'>
-                        {genres.get(ColumnName.CHOSEN)!.map((genre, index) => <Genre
+                        {genres.get(CHOSEN)!.map((genre, index) => <Genre
                             key={index}
-                            draggable={true}
-                            onDragStart={(e) => dragStartHandler(e, ColumnName.CHOSEN, index)}
-                            onDragEnd={(e) => e.preventDefault()}>
+                            {...draggable}
+                            onDragStart={e => helpers.dragStartHandler(e, CHOSEN, index)}>
                             {genre}
                         </Genre>)}
                     </GenresContainer>
 
                 </SelectedGenresColumn>
-                <GenreColumn id='all-column' onDrop={(e) => dropHandler(e, ColumnName.ALL)} onDragOver={dragOverHandler}>
+                <GenreColumn id='all-column' onDrop={(e) => helpers.dropHandler(e, ALL)} {...dropZone}>
                     <Text>Доступные жанры</Text>
                     <GenresContainer className='gap-2'>
-                        {genres.get(ColumnName.ALL)!.map((genre, index) => <Genre
+                        {genres.get(ALL)!.map((genre, index) => <Genre
                             key={index}
-                            draggable={true}
-                            onDragStart={(e) => dragStartHandler(e, ColumnName.ALL, index)}
-                            onDragEnd={(e) => e.preventDefault()}>
+                            {...draggable}
+                            onDragStart={e => helpers.dragStartHandler(e, ALL, index)}>
                             {genre}
                         </Genre>)}
                     </GenresContainer>
                 </GenreColumn>
             </ColumnLayout>
-
         </Saveable>
-
     )
 }
 
