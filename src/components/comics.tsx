@@ -27,7 +27,7 @@ const Comics: React.FC<IComicsProp> = (props) => {
 
     return (
         <>
-            <ComicsCard style={{ width: '18rem' }}>
+            <ComicsCard>
                 <CardHeader className='d-flex justify-content-between'>
                     {isRead
                         ? <SuccessfulText>Опубликован</SuccessfulText>
@@ -76,10 +76,17 @@ const ComicsCard = styled(Card)`
     padding: 0;
     border-radius: 25px;
     border: none;
+    height: 385px;
+    width: 280px;
+    overflow: hidden;
 `
 
 const ComicsBody = styled(Card.Body)`
     padding: 10px;
+    >img{
+        width: 100%;
+        height: 100%;
+    }
 `
 
 export default Comics;

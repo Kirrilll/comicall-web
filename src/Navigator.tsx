@@ -7,7 +7,6 @@ import WorkplacePage from './pages/workplacePage';
 import { AUTH_PATH, WORKPLACE_PATH } from './constants';
 
 function Navigator() {
-
   return (
     <Routes>
       <Route path={AUTH_PATH} element={<AuthentictionPage />} />

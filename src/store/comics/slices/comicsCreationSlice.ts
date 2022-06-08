@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FetchingState } from "../../../enums/fetchingState";
+import { IComics } from "../../../models/comics/comics";
 import { IComicsResponse } from "../../../models/comics/comicsResponce";
+import { updatePages } from "../thunkes/addPagesThunk";
 
 interface IComicsCreationState {
-    updatedComics: IComicsResponse | null,
+    updatedComics: IComics | null,
     isUpdating: boolean,
     creatingComicsStatus: FetchingState,
     updateComicsGenresStatus: FetchingState,
@@ -34,14 +36,14 @@ export const comicsCreationSlice = createSlice({
             state.updateComicsPagesStatus = FetchingState.IDLE,
             state.updateComicsPublishStatus = FetchingState.IDLE
         },
-        startUpdate(state, action: PayloadAction<IComicsResponse | null>) {
+        startUpdate(state, action: PayloadAction<IComics| null>) {
             state.updatedComics = action.payload;
             state.isUpdating = true;
         },
         creating(state) {
             state.creatingComicsStatus = FetchingState.LOADING;
         },
-        createdSuccessfully(state, action: PayloadAction<IComicsResponse>) {
+        createdSuccessfully(state, action: PayloadAction<IComics>) {
             state.creatingComicsStatus = FetchingState.SUCCESSFUL;
             state.updatedComics = action.payload;
         },
@@ -51,21 +53,27 @@ export const comicsCreationSlice = createSlice({
         updatingGenres(state) {
             state.updateComicsGenresStatus = FetchingState.LOADING;
         },
-        updatedGenresSuccessfully(state, action: PayloadAction<IComicsResponse>) {
+        updatedGenresSuccessfully(state, action: PayloadAction<IComics>) {
             state.updatedComics = action.payload;
             state.updateComicsGenresStatus = FetchingState.SUCCESSFUL;
-        },
-        updatingPages(state) {
-            state.updateComicsPagesStatus = FetchingState.LOADING;
-        },
-        updatedPagesSuccessfully(state) {
-            state.updateComicsPagesStatus = FetchingState.SUCCESSFUL;
         },
         updatingPublishStatus(state) {
             state.updateComicsPublishStatus = FetchingState.LOADING;
         },
         updatedPublishStatus(state) {
             state.updateComicsPublishStatus = FetchingState.SUCCESSFUL;
+        }
+    },
+    extraReducers:{
+        [updatePages.pending.type]:(state) =>{
+            state.updateComicsPagesStatus = FetchingState.LOADING;
+        },
+        [updatePages.fulfilled.type]:(state, action: PayloadAction<IComics>) =>{
+            state.updateComicsPagesStatus = FetchingState.SUCCESSFUL;
+            state.updatedComics = action.payload;
+        },
+        [updatePages.rejected.type]:(state) =>{
+            state.updateComicsPagesStatus = FetchingState.ERROR
         }
     }
 })

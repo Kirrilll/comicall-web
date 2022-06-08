@@ -1,5 +1,6 @@
 import axios from "axios";
 import { IComicsInfo } from "../../../components/createComicsTab";
+import { ComicsMapper } from "../../../helpers/comicsMapper";
 import { AuthorService } from "../../../services/authorService";
 import { AppDispatch } from "../../store";
 import {comicsCreationSlice} from "../slices/comicsCreationSlice";
@@ -13,7 +14,7 @@ export const create = (request: IAuthorizedRequst<IComicsInfo>) => (dispatch: Ap
     AuthorService.createComics(request)
     .then(res => {
         dispatch(comicsCreationSlice.actions.createdSuccessfully(res.data));
-        dispatch(comicsSlice.actions.createComics(res.data));
+        dispatch(comicsSlice.actions.createComics(ComicsMapper.toResponse(res.data)));
     })
     .catch(() =>  dispatch(comicsCreationSlice.actions.createdWithError()))
 }

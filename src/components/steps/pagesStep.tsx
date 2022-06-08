@@ -5,11 +5,26 @@ import styled from "styled-components";
 import { IoIosAdd } from "react-icons/io";
 import { Container, Spinner } from "react-bootstrap";
 import { Center } from "../../shared/center";
+import Saveable from "../saveable";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { useEffect } from "react";
+import { comicsCreationSlice } from "../../store/comics/slices/comicsCreationSlice";
+import { updatePages } from "../../store/comics/thunkes/addPagesThunk";
 
 const PagesStep: React.FC = () => {
     const [pages, setPages] = useState<FileList | null>(null)
     const [previews, setPreviews] = useState<Array<ArrayBuffer | string | null>>([]);
     const [isLoading, setIsLoading] = useState(false);
+
+
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(state => state.userReducer.user);
+    const { isUpdating, updateComicsPagesStatus, updatedComics } = useAppSelector(state => state.comicsCreationReducer);
+
+    useEffect(() => {
+        setPages(null);
+        setPreviews([]);
+    }, [isUpdating])
 
     const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsLoading(true)
@@ -37,36 +52,52 @@ const PagesStep: React.FC = () => {
         })
     }
 
-    return (
-        isLoading
-            ? <Center>
-                <Spinner style={{ width: '100px', height: '100px' }} animation="border" role="status" variant='warning'>
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </Center>
-            : <StepContainer>
-                <PagesContainer className='gap-3'>
-                    {
-                        previews?.map((preview, index) => <Page key={index}>
-                            <img id="uploaded-image"
-                                src={preview?.toString()}
-                                draggable={false}
-                                alt="uploaded-img" />
-                        </Page>
-                        )
-                    }
-                    <PageAddCard>
-                        <UploadInput htmlFor="upload-multi-input">
-                            <IoIosAdd color={'#FFC204'} size={'100'}></IoIosAdd>
-                            <Text>Загрузите страницы</Text>
-                        </UploadInput>
-                        <input onChange={handleImages} id="upload-multi-input" type="file" multiple accept=".jpg,.jpeg,.png" />
-                    </PageAddCard>
-                </PagesContainer>
+    const eventHandler = () => dispatch(updatePages({
+        token: user!.token,
+        content: {
+            comicsId: updatedComics!.id,
+            images: pages!
+        }
+    }));
 
-            </StepContainer>
+    return (
+        <Saveable eventHandler={eventHandler} status={updateComicsPagesStatus}>
+            {isLoading
+                ? <Center>
+                    <Spinner style={{ width: '100px', height: '100px' }} animation="border" role="status" variant='warning'>
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </Center>
+                : <StepContainer>
+                    <PagesContainer className='gap-3'>
+                        {
+                            previews?.map((preview, index) => <Page key={index}>
+                                <img id="uploaded-image"
+                                    src={preview?.toString()}
+                                    draggable={false}
+                                    alt="uploaded-img" />
+                            </Page>
+                            )
+                        }
+                        <PageAddCard>
+                            <UploadInput htmlFor="upload-multi-input">
+                                <IoIosAdd color={'#FFC204'} size={'100'}></IoIosAdd>
+                                <Text>Загрузите страницы</Text>
+                            </UploadInput>
+                            <input onChange={handleImages} id="upload-multi-input" type="file" multiple accept=".jpg,.jpeg,.png" />
+                        </PageAddCard>
+                    </PagesContainer>
+
+                </StepContainer>}
+        </Saveable>
+
     )
 }
+
+const Expanded = styled.div`
+    height: 100%;
+
+`
 
 const StepContainer = styled(Container)`
     overflow-y: auto;

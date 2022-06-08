@@ -21,7 +21,12 @@ const initialState: UserState = {
 export const userSlice = createSlice({
     name: 'user',
     initialState: initialState,
-    reducers:{},
+    reducers:{
+        logout(state){
+            state.user = null;
+            sessionStorage.clear();
+        }
+    },
     extraReducers: {
         [signIn.pending.type]: (state, action: PayloadAction<IUser>) => {
             state.signInState = FetchingState.LOADING;
