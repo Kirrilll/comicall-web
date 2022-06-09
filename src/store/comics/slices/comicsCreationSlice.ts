@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FetchingState } from "../../../enums/fetchingState";
 import { IComics } from "../../../models/comics/comics";
-import { IComicsResponse } from "../../../models/comics/comicsResponce";
 import { updatePages } from "../thunkes/addPagesThunk";
 
 interface IComicsCreationState {
@@ -32,7 +31,8 @@ export const comicsCreationSlice = createSlice({
         reset(state) {
             state.isUpdating = false;
             state.updatedComics = null;
-            state. updateComicsGenresStatus = FetchingState.IDLE,
+            state.creatingComicsStatus = FetchingState.IDLE,
+            state.updateComicsGenresStatus = FetchingState.IDLE,
             state.updateComicsPagesStatus = FetchingState.IDLE,
             state.updateComicsPublishStatus = FetchingState.IDLE
         },

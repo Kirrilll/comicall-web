@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ComicsMapper } from "../../../helpers/comicsMapper";
 import { AuthorService } from "../../../services/authorService";
 import { AppDispatch } from "../../store";
 import { comicsCreationSlice } from "../slices/comicsCreationSlice";
@@ -16,7 +15,7 @@ export const addGenres = (request: IAuthorizedRequst<GenresResponse>) => (dispat
     AuthorService.updateGenres(request)
     .then(res => {
         dispatch(comicsCreationSlice.actions.updatedGenresSuccessfully(res.data));
-        dispatch(comicsSlice.actions.updateComics(ComicsMapper.toResponse(res.data)));
+        dispatch(comicsSlice.actions.updateComics(res.data));
     })
     
 }

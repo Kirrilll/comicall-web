@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IComicsProp } from "../../../components/comics";
 import { FetchingState } from "../../../enums/fetchingState";
-import { IComicsResponse } from "../../../models/comics/comicsResponce";
+import { IComics } from "../../../models/comics/comics";
 import comicsSlice from "./comicsSlice";
 
 interface IDeleteComicsState{

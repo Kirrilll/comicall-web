@@ -1,11 +1,11 @@
 import React from "react";
 import { Container, Row } from "react-bootstrap";
-import { IComicsResponse } from "../models/comics/comicsResponce";
+import { IComics } from "../models/comics/comics";
 import { Center } from "../shared/center";
 import Comics from "./comics";
 
 interface IComicsContainerProp {
-    comics: Array<IComicsResponse>
+    comics: Array<IComics>
 }
 
 const ComicsContainer: React.FC<IComicsContainerProp> = (props) => {
@@ -20,7 +20,7 @@ const ComicsContainer: React.FC<IComicsContainerProp> = (props) => {
                     name={comicsItem.name}
                     posterPath={comicsItem.posterPath}
                     id={comicsItem.id}
-                    isRead={comicsItem.isRead}
+                    isRead={comicsItem.isReady}
                 />)}
             </Row>
         </Container>

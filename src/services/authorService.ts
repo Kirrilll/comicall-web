@@ -13,6 +13,11 @@ export interface PagesRequest {
     images: FileList
 }
 
+export interface IUpdatePublish {
+    comicsId: number,
+    isRead: boolean
+}
+
 export class AuthorService {
 
     static async getAllGenres(token: string) {
@@ -57,7 +62,7 @@ export class AuthorService {
 
         let formdata = new FormData();
         formdata.append('comicsId', request.content.comicsId.toString());
-        for(let i =0; i < request.content.images.length; i++){
+        for (let i = 0; i < request.content.images.length; i++) {
             formdata.append('images', request.content.images[i]);
         }
 
@@ -65,6 +70,14 @@ export class AuthorService {
             'http://localhost:8080/api/author/comics/add',
             formdata,
             { headers: { 'Authorization': `Bearer ${request.token}` } }
+        )
+    }
+
+    static async publishComics(request: IAuthorizedRequst<IUpdatePublish>) {
+        return await axios.put(
+            'http://localhost:8080/api/author/publish',
+            request.content,
+            { headers: { 'Authorization': `Bearer ${request.token}`}}
         )
     }
 }

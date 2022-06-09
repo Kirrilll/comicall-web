@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FetchingState } from "../../../enums/fetchingState";
-import { IComicsResponse } from "../../../models/comics/comicsResponce";
+import { IComics } from "../../../models/comics/comics";
 import { getAll } from "../thunkes/getAllThunk";
 
 
 interface IComicsState{
-    comics: IComicsResponse[],
+    comics: IComics[],
     status: FetchingState
 }
 
@@ -22,10 +22,10 @@ export const comicsSlice = createSlice({
         deleteComics(state, action: PayloadAction<number>){
             state.comics = state.comics.filter(item => item.id != action.payload);
         },
-        createComics(state, action: PayloadAction<IComicsResponse>){
+        createComics(state, action: PayloadAction<IComics>){
             state.comics.push(action.payload);
         },
-        updateComics(state, action: PayloadAction<IComicsResponse>){
+        updateComics(state, action: PayloadAction<IComics>){
             const comicsIndex = state.comics.findIndex(comics => comics.id == action.payload.id);
             state.comics[comicsIndex] = action.payload;
         }
@@ -34,7 +34,7 @@ export const comicsSlice = createSlice({
         [getAll.pending.type]: (state) =>{
             state.status = FetchingState.LOADING
         },
-        [getAll.fulfilled.type]: (state, action: PayloadAction<IComicsResponse[]>) => {
+        [getAll.fulfilled.type]: (state, action: PayloadAction<IComics[]>) => {
             state.status = FetchingState.SUCCESSFUL;
             state.comics = action.payload;
         },
