@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useEffect } from "react";
 import { comicsCreationSlice } from "../../store/comics/slices/comicsCreationSlice";
 import { updatePages } from "../../store/comics/thunkes/addPagesThunk";
+import { AuthorService } from "../../services/authorService";
 
 const PagesStep: React.FC = () => {
     const [pages, setPages] = useState<FileList | null>(null)
@@ -17,12 +18,34 @@ const PagesStep: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.userReducer.user);
-    const { isUpdating, updateComicsPagesStatus, updatedComics } = useAppSelector(state => state.comicsCreationReducer);
+    const { updateComicsPagesStatus, updatedComics } = useAppSelector(state => state.comicsCreationReducer);
 
     useEffect(() => {
-        setPages(null);
-        setPreviews([]);
-    }, [isUpdating])
+
+        if (updatedComics != null) {
+            setIsLoading(true);
+            AuthorService.getComicsPage({
+                token: user!.token,
+                content: updatedComics.id
+            }).then(res => {
+                setPreviews(
+                    res
+                        .data
+                        .map(page => `http://localhost:8080/storage?path=${page
+                            .path
+                            .split('')
+                            .map(symbol => symbol === '\\' ? '/' : symbol)
+                            .join('')}`
+                        ));
+                setIsLoading(false);
+            });
+        }
+
+        return () => {
+            setPages(null);
+            setPreviews([]);
+        }
+    }, [])
 
     const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsLoading(true)
@@ -71,7 +94,7 @@ const PagesStep: React.FC = () => {
                     <PagesContainer className='gap-3'>
                         {
                             previews?.map((preview, index) => <Page key={index}>
-                                <img id="uploaded-image"
+                                <img loading={'lazy'} id="uploaded-image"
                                     src={preview?.toString()}
                                     alt="uploaded-img" />
                             </Page>

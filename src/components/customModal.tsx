@@ -34,6 +34,7 @@ const Modal: React.FC<IModal> = (props) => {
 
 const CloseText = styled(ErrorText)`
     font-size: 32px;
+    padding: 5px 25px;
     cursor:pointer;
 
 `
@@ -44,6 +45,9 @@ const ModalContent = styled.div`
     max-width: 1080px;
     width: 100%;
     height: 810px;
+    border: 2px solid #363636;
+    background-color: #F7F7F7EE;
+    border-radius: 37px;
 `
 
 const ModalHeader = styled.div`

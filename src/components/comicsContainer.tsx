@@ -21,7 +21,7 @@ const ComicsContainer: React.FC<IComicsContainerProp> = (props) => {
     const openModal = () => dispatch(comicsCreationSlice.actions.startUpdate(null))
 
     return (
-        <Container className='p-3'>
+        <ComicsLayout className='p-3'>
             <Row xs={1} md={2} className='gap-3 justify-content-start'>
                 <CreateCard onClick = {openModal}>
                     <Center>
@@ -33,9 +33,26 @@ const ComicsContainer: React.FC<IComicsContainerProp> = (props) => {
                 </CreateCard>
                 {comics.map(comicsItem => <Comics key = {comicsItem.id} {...comicsItem}/>)}
             </Row>
-        </Container>
+        </ComicsLayout>
     )
 }
+
+const ComicsLayout = styled(Container) `
+    overflow: auto;
+    margin-top: 20px;
+    &::-webkit-scrollbar {
+        width: 12px;              
+    }
+    &::-webkit-scrollbar-track {
+        background-color: #e4e4e4;
+        border-radius: 100px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #FFC204;
+        border: 1px solid #D19F00;
+        border-radius: 100px;
+    }
+`
 
 const IconGroup = styled.div `
     display: flex;

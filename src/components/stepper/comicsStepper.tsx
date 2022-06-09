@@ -103,11 +103,15 @@ const TabContent = styled(Tab.Content)`
     max-height: 672px;
 `
 
-const StepperPanel = styled(FormPanel)`
+const StepperPanel = styled.div`
     max-width: 1080px;
     width: 100%;
     height: 780px;
     background-color: #F7F7F7EE;
+    background: rgba(196, 196, 196, 0.01);
+    border-radius: 37px;
+    padding: 17px 26px 35px 26px;
+    border: none;
     overflow: hidden;
 `
 

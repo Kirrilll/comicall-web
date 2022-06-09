@@ -23,6 +23,12 @@ export interface IUpdateInfo{
     info: IComicsInfo
 }
 
+export interface IPage{
+    id: number,
+    pageNumber: number,
+    path: string
+}
+
 export class AuthorService {
 
     static async getAllGenres(token: string) {
@@ -87,9 +93,6 @@ export class AuthorService {
     }
 
     static async updateComicsInfo(request: IAuthorizedRequst<IUpdateInfo>) {
-
-        console.log(request);
-
         let formdata = new FormData();
         if(request.content.info.logo != null && typeof request.content.info.logo !==  'string'){
            formdata.append("logo", request.content.info.logo); 
@@ -106,4 +109,14 @@ export class AuthorService {
             },
         )
     }
+
+    static async getComicsPage(request: IAuthorizedRequst<number>){
+        return await axios.get<IPage[]>(
+            `http://localhost:8080/api/author/comics/${request.content}`,
+            {
+                headers: { 'Authorization': `Bearer ${request.token}` },
+            },
+        )
+    }
+
 }

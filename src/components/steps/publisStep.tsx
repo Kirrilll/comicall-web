@@ -15,11 +15,11 @@ const PublishStep: React.FC = () => {
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.userReducer.user);
     const { updatedComics, isUpdating, updateComicsPublishStatus } = useAppSelector(state => state.comicsCreationReducer);
-    const [isPublish, setIsPublish] = useState(false);
+    const [isPublish, setIsPublish] = useState(updatedComics?.isReady ?? false);
 
     useEffect(() => {
-        setIsPublish(false);
-    }, [isUpdating])
+        () => setIsPublish(false);
+    }, [])
 
     const eventHandler = () => dispatch(updatePublish({
         token: user!.token,
