@@ -17,8 +17,8 @@ interface IComicsCreationState {
 
 const initialValue: IComicsCreationState = {
     updatedComics: null,
-    creatingComicsStatus: FetchingState.IDLE,
     isUpdating: false,
+    creatingComicsStatus: FetchingState.IDLE,
     updateComicsGenresStatus: FetchingState.IDLE,
     updateComicsPagesStatus: FetchingState.IDLE,
     updateComicsPublishStatus: FetchingState.IDLE

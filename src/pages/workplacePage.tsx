@@ -5,11 +5,11 @@ import AuthorComics from "../components/authorComicsTab";
 import { Background } from "../shared/background";
 import CreateComics from "../components/createComicsTab";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import {comicsCreationSlice} from "../store/comics/slices/comicsCreationSlice";
+import { comicsCreationSlice } from "../store/comics/slices/comicsCreationSlice";
 import LOGO from '../images/logo.png';
 import { ImExit } from "react-icons/im";
 import { Text } from "../shared/text";
-import {userSlice} from "../store/user/userSlice";
+import { userSlice } from "../store/user/userSlice";
 import { useNavigate } from "react-router";
 import { AUTH_PATH } from "../constants";
 
@@ -18,16 +18,10 @@ const CREATION = 'creation';
 
 const WorkplacePage: React.FC = () => {
 
-    const [openTabKey, setOpenTabKey] = useState(COMICS);
+
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.userReducer.user);
     const navigate = useNavigate();
-
-    const selectHandler = (key: string | null) => {
-        if(key == COMICS) dispatch(comicsCreationSlice.actions.reset());
-        else dispatch(comicsCreationSlice.actions.startUpdate(null));
-        setOpenTabKey(key!)
-    };
 
     const logout = () => {
         dispatch(userSlice.actions.logout());
@@ -37,38 +31,15 @@ const WorkplacePage: React.FC = () => {
     return (
         <Background>
             <Header>
-                <img  src = {LOGO}/>
+                <img src={LOGO} />
                 <UserPanel>
                     <BigText>
-                       {user!.username} 
+                        {user!.username}
                     </BigText>
-                    <ImExit onClick = {logout} size = '30' />
+                    <ImExit onClick={logout} size='30' />
                 </UserPanel>
             </Header>
-            <Tab.Container id = 'workplace-tabs' activeKey = {openTabKey} onSelect = {selectHandler}>
-                <Col className = 'pt-4'>
-                    <Nav variant='pills' style = {{display: 'block'}}>
-                        <div className='gx-0 d-flex justify-content-around'>
-                            <Nav.Item>
-                                <NavLink eventKey={COMICS}>Мои комиксы</NavLink>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <NavLink eventKey={CREATION}> Создать комикс</NavLink>
-                            </Nav.Item>
-                        </div>
-                    </Nav>
-                </Col>
-                <Col>
-                    <Tab.Content>
-                        <Tab.Pane eventKey={COMICS} className = 'p-2'>
-                            <AuthorComics></AuthorComics>
-                        </Tab.Pane>
-                        <Tab.Pane eventKey={CREATION} className = 'p-2'>
-                            <CreateComics></CreateComics>
-                        </Tab.Pane>
-                    </Tab.Content>
-                </Col>
-            </Tab.Container>
+            <AuthorComics></AuthorComics>
         </Background>
 
     )
@@ -82,7 +53,7 @@ const BigText = styled(Text)`
 
 `
 
-const UserPanel = styled.div `
+const UserPanel = styled.div`
     display: flex;
     gap: 15px;
     svg{

@@ -15,8 +15,6 @@ const PagesStep: React.FC = () => {
     const [pages, setPages] = useState<FileList | null>(null)
     const [previews, setPreviews] = useState<Array<ArrayBuffer | string | null>>([]);
     const [isLoading, setIsLoading] = useState(false);
-
-
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.userReducer.user);
     const { isUpdating, updateComicsPagesStatus, updatedComics } = useAppSelector(state => state.comicsCreationReducer);
@@ -60,6 +58,7 @@ const PagesStep: React.FC = () => {
         }
     }));
 
+
     return (
         <Saveable eventHandler={eventHandler} status={updateComicsPagesStatus}>
             {isLoading
@@ -74,7 +73,6 @@ const PagesStep: React.FC = () => {
                             previews?.map((preview, index) => <Page key={index}>
                                 <img id="uploaded-image"
                                     src={preview?.toString()}
-                                    draggable={false}
                                     alt="uploaded-img" />
                             </Page>
                             )
@@ -94,10 +92,6 @@ const PagesStep: React.FC = () => {
     )
 }
 
-const Expanded = styled.div`
-    height: 100%;
-
-`
 
 const StepContainer = styled(Container)`
     overflow-y: auto;

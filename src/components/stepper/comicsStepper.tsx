@@ -21,7 +21,7 @@ const ComicsStepper: React.FC<{ steps: IStep[] }> = (props) => {
     const { steps } = props;
     const {isUpdating} = useAppSelector(state => state.comicsCreationReducer)
 
-    const { stepIndex, togleNext, toglePrev, isFirst, isLast } = useStepper(steps.map<Step>(step => ({ name: step.name, label: step.label })), [isUpdating]);
+    const { stepIndex, togleNext, toglePrev, isFirst, isLast } = useStepper(steps.map(step => ({ name: step.name, label: step.label })), [isUpdating]);
 
     return (
         <Center>
@@ -107,11 +107,9 @@ const StepperPanel = styled(FormPanel)`
     max-width: 1080px;
     width: 100%;
     height: 780px;
+    background-color: #F7F7F7EE;
     overflow: hidden;
 `
 
 export default ComicsStepper;
 
-function as(arg0: (step: IStep) => void, as: any, Step: any): Step[] {
-    throw new Error("Function not implemented.");
-}

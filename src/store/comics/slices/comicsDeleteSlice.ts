@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IComicsProp } from "../../../components/comics";
 import { FetchingState } from "../../../enums/fetchingState";
 import { IComics } from "../../../models/comics/comics";
-import comicsSlice from "./comicsSlice";
 
 interface IDeleteComicsState{
     status: FetchingState,
     isModalOpen: boolean,
-    target: IComicsProp | null
+    target: IComics | null
 }
 
 const initialState: IDeleteComicsState = {
@@ -20,7 +18,7 @@ export const comicsDeleteSlice = createSlice({
     name: 'deleteSlice',
     initialState: initialState,
     reducers:{
-        activate(state, action: PayloadAction<IComicsProp>){
+        activate(state, action: PayloadAction<IComics>){
             state.isModalOpen = true;
             state.target = action.payload;
         },

@@ -6,35 +6,32 @@ import { Text } from "../shared/text";
 import { RiCloseFill, RiEdit2Line } from 'react-icons/ri';
 import { useAppDispatch } from "../hooks/redux";
 import {comicsDeleteSlice} from "../store/comics/slices/comicsDeleteSlice";
+import { IComics } from "../models/comics/comics";
+import { comicsCreationSlice } from "../store/comics/slices/comicsCreationSlice";
 
-export interface IComicsProp {
-    id: number,
-    name: string,
-    isRead: boolean,
-    posterPath: string;
-}
 
-const Comics: React.FC<IComicsProp> = (props) => {
+const Comics: React.FC<IComics> = (props) => {
     const dispatch = useAppDispatch()
 
-    const { posterPath, name, id, isRead } = props;
+    const { posterPath, name, id, isReady } = props;
     const clearPath = posterPath
         .split('')
         .map(symbol => symbol === '\\' ? '/' : symbol)
         .join('');
 
     const togleActivate = () => dispatch(comicsDeleteSlice.actions.activate(props));
+    const togleUpdate = () => dispatch(comicsCreationSlice.actions.startUpdate(props));
 
     return (
         <>
             <ComicsCard>
                 <CardHeader className='d-flex justify-content-between'>
-                    {isRead
+                    {isReady
                         ? <SuccessfulText>Опубликован</SuccessfulText>
                         : <ErrorText>Не опубликован</ErrorText>
                     }
                     <div className='text-right'>
-                        <IconButton className='me-2' >
+                        <IconButton onClick = {togleUpdate} className='me-2' >
                             <RiEdit2Line size={'25'}></RiEdit2Line>
                         </IconButton>
                         <IconButton onClick={togleActivate}>

@@ -10,8 +10,8 @@ import { ErrorText } from "../pages/authencticationPage";
 import { SecondaryButton } from "../shared/secondaryButton";
 
 interface IUploadImageBox {
-    preview: File | null
-    setPreview: (preview: File | null) => void
+    preview: File | null |  string
+    setPreview: (preview: File | null) => void,
 }
 
 const UploadImageBox: React.FC<IUploadImageBox> = (props) => {
@@ -70,10 +70,6 @@ const DeleteLink = styled(ErrorText)  `
     &:hover{
         text-decoration: underline;
     }
-`
-
-const UploadBoxContainer = styled(Container)`
-    padding: 0;
 `
 
 export default UploadImageBox;

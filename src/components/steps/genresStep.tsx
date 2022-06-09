@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, DragEvent, useRef } from "react";
+import React, { useState, DragEvent, useRef, useLayoutEffect } from "react";
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
@@ -12,40 +12,29 @@ import { Text } from "../../shared/text";
 import { addGenres } from "../../store/comics/thunkes/addGenresThunk";
 import Saveable from "../saveable";
 
-const GenresStep: React.FC = () => {
+const GenresStep: React.FC<{ allGenres: string[] }> = (props) => {
+
+    const { allGenres } = props;
+
+    const initialGenres = new Map().set(CHOSEN, []).set(ALL, allGenres);
 
     const dispatch = useAppDispatch();
     const { isUpdating, updatedComics, updateComicsGenresStatus } = useAppSelector(state => state.comicsCreationReducer)
-    const [allGenres, setAllGenres] = useState<string[]>([]);
     const user = useAppSelector(state => state.userReducer.user);
 
-    const [genres, setGenres] = useState(new Map<string, string[]>([
-        [CHOSEN, []],
-        [ALL, []]
-    ]));
+    const [genres, setGenres] = useState(new Map<string, string[]>(initialGenres));
 
     useEffect(() => {
-        AuthorService.getAllGenres(user!.token)
-            .then(res => {
-                const tempAllGenres = res.data.map(genre => genre.name);
-                setAllGenres(tempAllGenres);
-                setGenres(new Map()
-                    .set(CHOSEN, [])
-                    .set(ALL, tempAllGenres)
-                )
-            });
+        if (updatedComics != null) {
+            const tempGenres = new Map<string, string[]>();
+            const comicsGenres = updatedComics.genres.map(genre => genre.name);
+            tempGenres
+                .set(CHOSEN, comicsGenres)
+                .set(ALL, allGenres.filter(genre => comicsGenres.indexOf(genre) == -1));
+            setGenres(tempGenres);
+        }
+        return () => setGenres(initialGenres);
     }, [])
-
-    useEffect(() => {
-        if (!isUpdating) setGenres(new Map()
-            .set(CHOSEN, [])
-            .set(ALL, allGenres)
-        );
-        // else if (updatedComics != null) setGenres(new Map()
-        //     .set(ColumnName.CHOSEN, updatedComics.genres)
-        //     .set(ColumnName.ALL, allGenres.filter(genre => updatedComics.genres.indexOf(genre) == -1)))
-    }, [isUpdating, updatedComics])
-
 
     const { draggable, dropZone, helpers } = useDragNDrop({ columns: genres, handleColums: value => setGenres(value) })
 

@@ -18,6 +18,11 @@ export interface IUpdatePublish {
     isRead: boolean
 }
 
+export interface IUpdateInfo{
+    comicsId: number,
+    info: IComicsInfo
+}
+
 export class AuthorService {
 
     static async getAllGenres(token: string) {
@@ -77,7 +82,28 @@ export class AuthorService {
         return await axios.put(
             'http://localhost:8080/api/author/publish',
             request.content,
-            { headers: { 'Authorization': `Bearer ${request.token}`}}
+            { headers: { 'Authorization': `Bearer ${request.token}` } }
+        )
+    }
+
+    static async updateComicsInfo(request: IAuthorizedRequst<IUpdateInfo>) {
+
+        console.log(request);
+
+        let formdata = new FormData();
+        if(request.content.info.logo != null && typeof request.content.info.logo !==  'string'){
+           formdata.append("logo", request.content.info.logo); 
+        }
+        formdata.append("name", request.content.info.name);
+        formdata.append("description", request.content.info.description);
+        formdata.append("publishYear", request.content.info.publishYear!.toString());
+
+        return await axios.put<IComics>(
+            `http://localhost:8080/api/author/change/${request.content.comicsId}`,
+            formdata,
+            {
+                headers: { 'Authorization': `Bearer ${request.token}` },
+            },
         )
     }
 }

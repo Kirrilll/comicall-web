@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { GENRES, INFORMATION, PAGES, PUBLISH } from "../constants";
 import { useAppSelector } from "../hooks/redux";
 import ComicsStepper, { IStep } from "./stepper/comicsStepper";
@@ -10,12 +11,14 @@ import PublishStep from "./steps/publisStep";
 export interface IComicsInfo {
     name: string,
     description: string,
-    logo: File | null,
+    logo: File | null | string,
     publishYear: number | null
 }
 
 
-const CreateComics: React.FC = () => {
+const CreateComics: React.FC<{allGenres: string[]}> = (props) => {
+
+    const {allGenres} = props;
 
     const updatedComics = useAppSelector(state => state.comicsCreationReducer.updatedComics);
 
@@ -32,7 +35,7 @@ const CreateComics: React.FC = () => {
         {
             name: GENRES,
             label: 'Жанры',
-            content: <GenresStep></GenresStep>,
+            content: <GenresStep allGenres = {allGenres}></GenresStep>,
             isFinished: isGenresFinished()
         },
         {
